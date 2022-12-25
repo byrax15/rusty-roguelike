@@ -1,4 +1,4 @@
-use crate::map::TileType::Floor;
+use crate::map::TileType::*;
 use crate::prelude::*;
 
 const NUM_TILES: usize = (SCREEN_WIDTH * SCREEN_HEIGHT) as usize;
@@ -12,9 +12,9 @@ pub enum TileType {
 impl TileType {
     pub(crate) fn render(&self, ctx: &mut BTerm, x: i32, y: i32) {
         match self {
-            Self::Floor =>
+            Floor =>
                 ctx.set(x, y, YELLOW, BLACK, to_cp437('.')),
-            Self::Wall =>
+            Wall =>
                 ctx.set(x, y, GREEN, BLACK, to_cp437('#')),
         }
     }
@@ -27,7 +27,7 @@ pub struct Map {
 impl Map {
     pub fn new() -> Self {
         Self {
-            tiles: vec![TileType::Floor; NUM_TILES],
+            tiles: vec![Floor; NUM_TILES],
         }
     }
 
@@ -57,6 +57,6 @@ impl Map {
     }
 }
 
-fn map_idx(x: i32, y: i32) -> usize {
+pub(crate) fn map_idx(x: i32, y: i32) -> usize {
     (y * SCREEN_WIDTH + x) as usize
 }
