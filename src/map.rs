@@ -13,9 +13,9 @@ impl TileType {
     pub(crate) fn render(&self, ctx: &mut BTerm, x: i32, y: i32) {
         match self {
             Floor =>
-                ctx.set(x, y, YELLOW, BLACK, to_cp437('.')),
+                ctx.set(x, y, WHITE, BLACK, to_cp437('.')),
             Wall =>
-                ctx.set(x, y, GREEN, BLACK, to_cp437('#')),
+                ctx.set(x, y, WHITE, BLACK, to_cp437('#')),
         }
     }
 }
@@ -31,11 +31,14 @@ impl Map {
         }
     }
 
-    pub fn render(&self, ctx: &mut BTerm) {
-        for y in 0..SCREEN_HEIGHT {
-            for x in 0..SCREEN_WIDTH {
-                let tile = self.tiles[map_idx(x, y)];
-                tile.render(ctx, x, y);
+    pub fn render(&self, ctx: &mut BTerm, camera: &Camera) {
+        ctx.set_active_console(0);
+        for y in camera.top_y..camera.bottom_y {
+            for x in camera.left_x..camera.right_x {
+                if self.in_bounds(Point::new(x,y)) {
+                    let tile = self.tiles[map_idx(x, y)];
+                    tile.render(ctx, x - camera.left_x, y - camera.top_y);
+                }
             }
         }
     }
