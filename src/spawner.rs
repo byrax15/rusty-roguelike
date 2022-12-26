@@ -17,7 +17,7 @@ pub fn spawn_monster(
     pos: Point,
 ) {
     ecs.push((
-        Enemy, pos, Render {
+        Enemy, pos, MovingRandomly, Render {
             color: ColorPair::new(WHITE, BLACK),
             glyph: match rng.range(0, 4) {
                 0 => to_cp437('E'),
