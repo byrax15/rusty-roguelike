@@ -23,6 +23,10 @@ impl Camera {
     pub fn on_player_move(&mut self, player_position: Point) {
         refresh_camera(self, player_position)
     }
+
+    pub fn top_left(&self) -> Point {
+        Point::new(self.left_x, self.top_y)
+    }
 }
 
 fn refresh_camera(c: &mut Camera, player_position: Point) {

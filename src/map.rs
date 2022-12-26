@@ -9,17 +9,6 @@ pub enum TileType {
     Floor,
 }
 
-impl TileType {
-    pub(crate) fn render(&self, ctx: &mut BTerm, x: i32, y: i32) {
-        match self {
-            Floor =>
-                ctx.set(x, y, WHITE, BLACK, to_cp437('.')),
-            Wall =>
-                ctx.set(x, y, WHITE, BLACK, to_cp437('#')),
-        }
-    }
-}
-
 pub struct Map {
     pub tiles: Vec<TileType>,
 }
@@ -28,18 +17,6 @@ impl Map {
     pub fn new() -> Self {
         Self {
             tiles: vec![Floor; NUM_TILES],
-        }
-    }
-
-    pub fn render(&self, ctx: &mut BTerm, camera: &Camera) {
-        ctx.set_active_console(0);
-        for y in camera.top_y..camera.bottom_y {
-            for x in camera.left_x..camera.right_x {
-                if self.in_bounds(Point::new(x,y)) {
-                    let tile = self.tiles[map_idx(x, y)];
-                    tile.render(ctx, x - camera.left_x, y - camera.top_y);
-                }
-            }
         }
     }
 
@@ -60,6 +37,6 @@ impl Map {
     }
 }
 
-pub(crate) fn map_idx(x: i32, y: i32) -> usize {
+pub fn map_idx(x: i32, y: i32) -> usize {
     (y * SCREEN_WIDTH + x) as usize
 }
