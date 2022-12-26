@@ -36,7 +36,7 @@ struct State {
     resources: Resources,
     systems: Schedule,
 }
-penis
+
 impl State {
     fn new() -> Self {
         let mut ecs = World::default();
