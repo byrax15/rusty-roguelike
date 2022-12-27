@@ -3,7 +3,6 @@ use crate::camera::*;
 use crate::prelude::*;
 use TurnState::*;
 
-
 mod map;
 mod map_builder;
 mod camera;
@@ -33,6 +32,7 @@ mod prelude {
     pub const DISPLAY_HEIGHT: i32 = SCREEN_HEIGHT / 2;
 
     pub const DUNGEON_FONT: &str = "dungeonfont.png";
+    pub const TERM8X8_FONT: &str = "terminal8x8.png";
 }
 
 struct State {
@@ -68,13 +68,21 @@ impl State {
     }
 }
 
+macro_rules! clear_console {
+    ($ctx: expr, $console_id: expr) => {
+        $ctx.set_active_console($console_id);
+        $ctx.cls();
+    }
+}
+
 impl GameState for State {
     fn tick(&mut self, ctx: &mut BTerm) {
-        ctx.set_active_console(0);
-        ctx.cls();
-        ctx.set_active_console(1);
-        ctx.cls();
+        clear_console!(ctx, 2);
+        clear_console!(ctx, 1);
+        clear_console!(ctx, 0);
+
         self.resources.insert(ctx.key);
+        self.resources.insert(Point::from_tuple(ctx.mouse_pos()));
 
         let current_state
             = *self.resources.get::<TurnState>().unwrap();
@@ -98,8 +106,10 @@ fn main() -> BError {
         .with_tile_dimensions(32, 32)
         .with_resource_path("resources/")
         .with_font(DUNGEON_FONT, 32, 32)
+        .with_font(TERM8X8_FONT, 8, 8)
         .with_simple_console(DISPLAY_WIDTH, DISPLAY_HEIGHT, DUNGEON_FONT)
         .with_simple_console_no_bg(DISPLAY_WIDTH, DISPLAY_HEIGHT, DUNGEON_FONT)
+        .with_simple_console_no_bg(SCREEN_WIDTH * 2, SCREEN_HEIGHT * 2, TERM8X8_FONT)
         .build()?;
     main_loop(context, State::new())
 }
