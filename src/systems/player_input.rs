@@ -4,6 +4,7 @@ use VirtualKeyCode::*;
 #[system]
 #[read_component(Point)]
 #[read_component(Player)]
+#[write_component(Health)]
 pub fn player_input(
     ecs: &mut SubWorld,
     commands: &mut CommandBuffer,
@@ -18,7 +19,7 @@ pub fn player_input(
             Right => Point::new(1, 0),
             Up => Point::new(0, -1),
             Down => Point::new(0, 1),
-            _ => Point::new(0, 0),
+            _ => Point::zero(),
         };
 
         let (player_entity, destination) = players
@@ -46,6 +47,10 @@ pub fn player_input(
                     destination,
                 }));
             }
+        } else if let Ok(mut health)
+            = ecs.entry_mut(player_entity).unwrap().get_component_mut::<Health>()
+        {
+            health.current = i32::min(health.max, health.current + 1);
         }
         *turn_state = TurnState::PlayerTurn;
     }
