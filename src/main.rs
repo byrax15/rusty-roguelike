@@ -1,5 +1,3 @@
-use std::process::exit;
-
 use bracket_lib::prelude::RandomNumberGenerator;
 
 use TurnState::*;

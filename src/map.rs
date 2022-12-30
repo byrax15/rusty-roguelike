@@ -11,9 +11,49 @@ pub enum TileType {
 
 pub struct Map {
     pub tiles: Vec<TileType>,
+    pub revealed_tiles: Vec<bool>,
+}
+
+impl Map {
+    pub fn new() -> Self {
+        Self {
+            tiles: vec![Floor; NUM_TILES],
+            revealed_tiles: vec![false; NUM_TILES],
+        }
+    }
+
+    pub fn in_bounds(&self, point: Point) -> bool {
+        point.x >= 0 && point.x < SCREEN_WIDTH && point.y >= 0 && point.y < SCREEN_HEIGHT
+    }
+
+    pub fn can_enter_tile(&self, point: Point) -> bool {
+        self.in_bounds(point) && self.tiles[map_idx(point.x, point.y)] == Floor
+    }
+
+    pub fn try_idx(&self, point: Point) -> Option<usize> {
+        if !self.in_bounds(point) {
+            None
+        } else {
+            Some(map_idx(point.x, point.y))
+        }
+    }
+
+    fn valid_exit(&self, loc: Point, delta: Point) -> Option<usize> {
+        let dest = loc + delta;
+        if self.in_bounds(dest) && self.can_enter_tile(dest) {
+            let idx = self.point2d_to_index(dest);
+            Some(idx)
+        } else {
+            None
+        }
+    }
 }
 
 impl BaseMap for Map {
+    fn is_opaque(&self, _idx: usize) -> bool {
+        self.tiles[_idx as usize] != Floor
+    }
+
     fn get_available_exits(&self, _idx: usize) -> SmallVec<[(usize, f32); 10]> {
         let mut exits = SmallVec::new();
         let location = self.index_to_point2d(_idx);
@@ -49,40 +89,6 @@ impl Algorithm2D for Map {
 
     fn in_bounds(&self, pos: Point) -> bool {
         self.in_bounds(pos)
-    }
-}
-
-impl Map {
-    pub fn new() -> Self {
-        Self {
-            tiles: vec![Floor; NUM_TILES],
-        }
-    }
-
-    pub fn in_bounds(&self, point: Point) -> bool {
-        point.x >= 0 && point.x < SCREEN_WIDTH && point.y >= 0 && point.y < SCREEN_HEIGHT
-    }
-
-    pub fn can_enter_tile(&self, point: Point) -> bool {
-        self.in_bounds(point) && self.tiles[map_idx(point.x, point.y)] == Floor
-    }
-
-    pub fn try_idx(&self, point: Point) -> Option<usize> {
-        if !self.in_bounds(point) {
-            None
-        } else {
-            Some(map_idx(point.x, point.y))
-        }
-    }
-
-    fn valid_exit(&self, loc: Point, delta: Point) -> Option<usize> {
-        let dest = loc + delta;
-        if self.in_bounds(dest) && self.can_enter_tile(dest) {
-            let idx = self.point2d_to_index(dest);
-            Some(idx)
-        } else {
-            None
-        }
     }
 }
 

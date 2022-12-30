@@ -2,13 +2,12 @@ use crate::prelude::*;
 
 pub fn spawn_player(ecs: &mut World, pos: Point) {
     ecs.push((
-        Player,
-        pos,
+        Player, pos, FieldOfView::new(8),
+        Health { current: 10, max: 10 },
         Render {
             color: ColorPair::new(WHITE, BLACK),
             glyph: to_cp437('@'),
         },
-        Health { current: 10, max: 10 },
     ));
 }
 
@@ -23,6 +22,7 @@ pub fn spawn_monster(
     };
     ecs.push((
         Enemy, pos, ChasingPlayer, Name(name),
+        FieldOfView::new(6),
         Health { current: hp, max: hp },
         Render { glyph, color: ColorPair::new(WHITE, BLACK) }
     ));
