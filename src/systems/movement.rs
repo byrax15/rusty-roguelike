@@ -1,5 +1,4 @@
 use crate::prelude::*;
-use crate::systems::fov::fov;
 
 #[system(for_each)]
 #[read_component(Player)]

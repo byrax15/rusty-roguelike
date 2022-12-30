@@ -6,12 +6,12 @@ use crate::camera::*;
 use crate::prelude::*;
 
 mod map;
-mod map_builder;
 mod camera;
 mod spawner;
 mod components;
 mod systems;
 mod turn_state;
+mod map_builder;
 
 mod prelude {
     pub use bracket_lib::prelude::*;
@@ -78,11 +78,9 @@ impl State {
 
         spawn_player(ecs, map_builder.player_start);
         spawn_amulet_of_yala(ecs, map_builder.amulet_start);
-        map_builder.rooms
+        map_builder.monster_spawns
             .iter()
-            .skip(1)
-            .map(|r| r.center())
-            .for_each(|pos| spawn_monster(ecs, &mut rng, pos));
+            .for_each(|pos| spawn_monster(ecs, &mut rng, *pos));
 
         resources.insert(map_builder.map);
         resources.insert(Camera::new(map_builder.player_start));
