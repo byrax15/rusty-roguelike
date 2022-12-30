@@ -16,6 +16,9 @@ pub struct Enemy;
 pub struct MovingRandomly;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
+pub struct ChasingPlayer;
+
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct WantsToMove {
     pub entity: Entity,
     pub destination: Point,
@@ -35,4 +38,10 @@ pub struct Health {
 
 #[derive(Clone, PartialEq)]
 pub struct Name(pub String);
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct Item;
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct AmuletOfYala;
 
