@@ -1,15 +1,16 @@
 use crate::map::map_idx;
 use crate::map_builder::automata::CellularAutomataArchitect;
 use crate::map_builder::drunkard::DrunkardWalkArchitect;
-use crate::map_builder::empty::EmptyArchitect;
+use crate::map_builder::prefab::apply_prefab;
 use crate::map_builder::rooms::RoomsArchitect;
 use crate::prelude::*;
-use crate::prelude::CellularReturnType::Distance;
+
 
 mod empty;
 mod rooms;
 mod automata;
 mod drunkard;
+mod prefab;
 
 const NUM_ROOMS: usize = 20;
 
@@ -27,8 +28,14 @@ pub trait MapArchitect {
 
 impl MapBuilder {
     pub fn new(rng: &mut RandomNumberGenerator) -> Self {
-        let mut architect = DrunkardWalkArchitect;
-        architect.new(rng)
+        let mut architect : Box<dyn MapArchitect> = match rng.range(0, 3) {
+            0 => Box::new(DrunkardWalkArchitect),
+            1 => Box::new(RoomsArchitect),
+            _ => Box::new(CellularAutomataArchitect),
+        };
+        let mut mb = architect.new(rng);
+        apply_prefab(&mut mb, rng);
+        mb
     }
 
     pub fn empty() -> Self {
