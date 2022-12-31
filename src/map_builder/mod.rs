@@ -1,5 +1,6 @@
 use crate::map::map_idx;
 use crate::map_builder::automata::CellularAutomataArchitect;
+use crate::map_builder::drunkard::DrunkardWalkArchitect;
 use crate::map_builder::empty::EmptyArchitect;
 use crate::map_builder::rooms::RoomsArchitect;
 use crate::prelude::*;
@@ -8,12 +9,9 @@ use crate::prelude::CellularReturnType::Distance;
 mod empty;
 mod rooms;
 mod automata;
+mod drunkard;
 
 const NUM_ROOMS: usize = 20;
-
-pub trait MapArchitect {
-    fn new(&mut self, rng: &mut RandomNumberGenerator) -> MapBuilder;
-}
 
 pub struct MapBuilder {
     pub map: Map,
@@ -23,9 +21,13 @@ pub struct MapBuilder {
     pub amulet_start: Point,
 }
 
+pub trait MapArchitect {
+    fn new(&mut self, rng: &mut RandomNumberGenerator) -> MapBuilder;
+}
+
 impl MapBuilder {
     pub fn new(rng: &mut RandomNumberGenerator) -> Self {
-        let mut architect = CellularAutomataArchitect;
+        let mut architect = DrunkardWalkArchitect;
         architect.new(rng)
     }
 
