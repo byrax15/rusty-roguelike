@@ -85,6 +85,7 @@ impl State {
         resources.insert(map_builder.map);
         resources.insert(Camera::new(map_builder.player_start));
         resources.insert(AwaitingInput);
+        resources.insert(map_builder.theme);
     }
 
     fn game_over(&mut self, ctx: &mut BTerm) {

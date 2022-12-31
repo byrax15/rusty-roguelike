@@ -7,6 +7,7 @@ pub fn map_render(
     ecs: &SubWorld,
     #[resource] map: &Map,
     #[resource] camera: &Camera,
+    #[resource] theme: &Box<dyn MapTheme>,
 ) {
     let mut fov
         = <&FieldOfView>::query().filter(component::<Player>());
@@ -24,11 +25,7 @@ pub fn map_render(
                 && (tile_in_fov || map.revealed_tiles[idx])
             {
                 let tint = if tile_in_fov { WHITE } else { DARK_GRAY };
-                let glyph = match map.tiles[idx] {
-                    TileType::Floor => to_cp437('.'),
-                    TileType::Wall => to_cp437('#'),
-                };
-
+                let glyph = theme.tile_to_render(map.tiles[idx]);
                 let offset = Point::new(camera.left_x, camera.top_y);
                 draw_batch.set(
                     pt - offset,
