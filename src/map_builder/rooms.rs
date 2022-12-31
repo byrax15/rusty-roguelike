@@ -1,5 +1,4 @@
 use crate::prelude::*;
-use crate::prelude::VirtualKeyCode::V;
 use super::MapArchitect;
 
 pub struct RoomsArchitect;
@@ -18,7 +17,7 @@ impl MapArchitect for RoomsArchitect {
         mb.build_corridors(rng);
         mb.player_start = mb.rooms[0].center();
         mb.amulet_start = mb.find_most_distant();
-        for room in mb.rooms.iter.skip(1) {
+        for room in mb.rooms.iter().skip(1) {
             mb.monster_spawns.push(room.center());
         }
 

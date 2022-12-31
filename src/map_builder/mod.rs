@@ -1,10 +1,13 @@
 use crate::map::map_idx;
+use crate::map_builder::automata::CellularAutomataArchitect;
 use crate::map_builder::empty::EmptyArchitect;
 use crate::map_builder::rooms::RoomsArchitect;
 use crate::prelude::*;
+use crate::prelude::CellularReturnType::Distance;
 
 mod empty;
 mod rooms;
+mod automata;
 
 const NUM_ROOMS: usize = 20;
 
@@ -22,8 +25,40 @@ pub struct MapBuilder {
 
 impl MapBuilder {
     pub fn new(rng: &mut RandomNumberGenerator) -> Self {
-        let mut architect = RoomsArchitect;
+        let mut architect = CellularAutomataArchitect;
         architect.new(rng)
+    }
+
+    pub fn empty() -> Self {
+        Self {
+            map: Map::new(),
+            rooms: Vec::new(),
+            monster_spawns: Vec::new(),
+            player_start: Point::zero(),
+            amulet_start: Point::zero(),
+        }
+    }
+
+    fn spawn_monsters(
+        &self,
+        start: &Point,
+        rng: &mut RandomNumberGenerator,
+    ) -> Vec<Point> {
+        const NUM_MONSTERS: usize = 50;
+        let mut spawnable_tiles: Vec<Point> = self.map.tiles
+            .iter()
+            .enumerate()
+            .filter(|(idx, t)| **t == TileType::Floor
+                && 10. < DistanceAlg::Pythagoras.distance2d(*start, self.map.index_to_point2d(*idx)))
+            .map(|(idx, _)| self.map.index_to_point2d(idx))
+            .collect();
+        let mut spawns = vec![];
+        for _ in 0..NUM_MONSTERS {
+            let target_index = rng.random_slice_index(&spawnable_tiles).unwrap();
+            spawns.push(spawnable_tiles[target_index].clone());
+            spawnable_tiles.remove(target_index);
+        }
+        spawns
     }
 
     fn fill(&mut self, tile: TileType) {
