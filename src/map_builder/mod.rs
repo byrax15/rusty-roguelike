@@ -6,7 +6,6 @@ use crate::map_builder::rooms::RoomsArchitect;
 use crate::map_builder::themes::{DungeonTheme, ForestTheme};
 use crate::prelude::*;
 
-
 mod empty;
 mod rooms;
 mod automata;

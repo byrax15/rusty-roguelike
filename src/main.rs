@@ -8,10 +8,10 @@ use crate::prelude::*;
 mod map;
 mod camera;
 mod spawner;
-mod components;
 mod systems;
 mod turn_state;
 mod map_builder;
+mod components;
 
 mod prelude {
     pub use bracket_lib::prelude::*;
@@ -20,12 +20,15 @@ mod prelude {
     pub use legion::world::SubWorld;
 
     pub use crate::camera::*;
-    pub use crate::components::*;
+    pub use crate::map_builder::*;
     pub use crate::map::*;
     pub use crate::map_builder::*;
     pub use crate::spawner::*;
     pub use crate::systems::*;
     pub use crate::turn_state::*;
+    pub use crate::components::*;
+    pub use crate::components::items::*;
+    pub use crate::components::behaviour::*;
 
     pub const SCREEN_WIDTH: i32 = 80;
     pub const SCREEN_HEIGHT: i32 = 50;
@@ -80,7 +83,7 @@ impl State {
         spawn_amulet_of_yala(ecs, map_builder.amulet_start);
         map_builder.monster_spawns
             .iter()
-            .for_each(|pos| spawn_monster(ecs, &mut rng, *pos));
+            .for_each(|pos| spawn_entity(ecs, &mut rng, *pos));
 
         resources.insert(map_builder.map);
         resources.insert(Camera::new(map_builder.player_start));

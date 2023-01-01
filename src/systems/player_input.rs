@@ -4,6 +4,9 @@ use VirtualKeyCode::*;
 #[system]
 #[read_component(Point)]
 #[read_component(Player)]
+#[read_component(Enemy)]
+#[read_component(Item)]
+#[read_component(Carried)]
 #[write_component(Health)]
 pub fn player_input(
     ecs: &mut SubWorld,
@@ -19,6 +22,21 @@ pub fn player_input(
             Right => Point::new(1, 0),
             Up => Point::new(0, -1),
             Down => Point::new(0, 1),
+            G => {
+                let (player, player_pos) = players
+                    .iter(ecs)
+                    .find_map(|(entity, pos)| Some((*entity, *pos)))
+                    .unwrap();
+                let mut items = <(Entity, &Item, &Point)>::query();
+                items
+                    .iter(ecs)
+                    .filter(|(_entity, _item, &item_pos)| item_pos == player_pos)
+                    .for_each(|(entity, _item, _item_pos)| {
+                        commands.remove_component::<Point>(*entity);
+                        commands.add_component(*entity, Carried(player));
+                    });
+                Point::zero()
+            }
             _ => Point::zero(),
         };
 
