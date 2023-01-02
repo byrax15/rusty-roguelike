@@ -22,6 +22,15 @@ pub fn player_input(
             Right => Point::new(1, 0),
             Up => Point::new(0, -1),
             Down => Point::new(0, 1),
+            Key1 => use_item(0, ecs, commands),
+            Key2 => use_item(1, ecs, commands),
+            Key3 => use_item(2, ecs, commands),
+            Key4 => use_item(3, ecs, commands),
+            Key5 => use_item(4, ecs, commands),
+            Key6 => use_item(5, ecs, commands),
+            Key7 => use_item(6, ecs, commands),
+            Key8 => use_item(7, ecs, commands),
+            Key9 => use_item(8, ecs, commands),
             G => {
                 let (player, player_pos) = players
                     .iter(ecs)
@@ -65,11 +74,31 @@ pub fn player_input(
                     destination,
                 }));
             }
-        } else if let Ok(mut health)
-            = ecs.entry_mut(player_entity).unwrap().get_component_mut::<Health>()
-        {
-            health.current = i32::min(health.max, health.current + 1);
         }
+
         *turn_state = TurnState::PlayerTurn;
     }
+}
+
+fn use_item(
+    n: usize,
+    ecs: &mut SubWorld,
+    commands: &mut CommandBuffer,
+) -> Point {
+    let player_entity = <(Entity, &Player)>::query()
+        .iter(ecs)
+        .find_map(|(entity, _player)| Some(*entity))
+        .unwrap();
+    let item_entity = <(Entity, &Item, &Carried)>::query()
+        .iter(ecs).filter(|(_, _, carried)| carried.0 == player_entity)
+        .enumerate()
+        .filter(|(item_count, _)| *item_count == n)
+        .find_map(|(_, (item_entity, _, _))| Some(*item_entity));
+    if let Some(item_entity) = item_entity {
+        commands.push(((), ActivateItem {
+            used_by: player_entity,
+            item: item_entity,
+        }));
+    }
+    Point::zero()
 }

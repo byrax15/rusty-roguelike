@@ -8,7 +8,7 @@ pub struct AmuletOfYala;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct ProvidesHealing {
-    pub amout: i32,
+    pub amount: i32,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
