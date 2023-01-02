@@ -7,6 +7,7 @@ const NUM_TILES: usize = (SCREEN_WIDTH * SCREEN_HEIGHT) as usize;
 pub enum TileType {
     Wall,
     Floor,
+    Exit,
 }
 
 pub struct Map {
@@ -27,7 +28,8 @@ impl Map {
     }
 
     pub fn can_enter_tile(&self, point: Point) -> bool {
-        self.in_bounds(point) && self.tiles[map_idx(point.x, point.y)] == Floor
+        let tile_type = self.tiles[map_idx(point.x, point.y)];
+        self.in_bounds(point) && (tile_type == Floor || tile_type == Exit)
     }
 
     pub fn try_idx(&self, point: Point) -> Option<usize> {
@@ -77,7 +79,7 @@ impl BaseMap for Map {
     fn get_pathing_distance(&self, _idx1: usize, _idx2: usize) -> f32 {
         DistanceAlg::Pythagoras.distance2d(
             self.index_to_point2d(_idx1),
-            self.index_to_point2d(_idx2)
+            self.index_to_point2d(_idx2),
         )
     }
 }
