@@ -89,9 +89,7 @@ impl State {
     }
 
     fn update_resources(ecs: &mut World, resources: &mut Resources, rng: &mut RandomNumberGenerator, map_builder: MapBuilder) {
-        map_builder.monster_spawns
-            .iter()
-            .for_each(|pos| spawn_entity(ecs, rng, *pos));
+        spawn_level(ecs, rng, 0, &map_builder.monster_spawns);
 
         resources.insert(map_builder.map);
         resources.insert(Camera::new(map_builder.player_start));
