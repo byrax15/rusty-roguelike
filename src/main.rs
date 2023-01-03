@@ -215,8 +215,7 @@ impl GameState for State {
     }
 }
 
-
-fn main() -> BError {
+pub fn main() -> BError {
     let context = BTermBuilder::new()
         .with_title("Dungeon Crawler")
         .with_fps_cap(30.)
