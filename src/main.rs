@@ -1,3 +1,4 @@
+add_wasm_support!();
 use std::collections::HashSet;
 use bracket_lib::prelude::RandomNumberGenerator;
 
