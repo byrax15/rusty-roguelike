@@ -28,8 +28,12 @@ impl Map {
     }
 
     pub fn can_enter_tile(&self, point: Point) -> bool {
-        let tile_type = self.tiles[map_idx(point.x, point.y)];
-        self.in_bounds(point) && (tile_type == Floor || tile_type == Exit)
+        if let Some(idx) = self.try_idx(point) {
+            let tile_type = self.tiles[idx];
+            self.in_bounds(point) && (tile_type == Floor || tile_type == Exit)
+        } else {
+            false
+        }
     }
 
     pub fn try_idx(&self, point: Point) -> Option<usize> {
@@ -53,7 +57,7 @@ impl Map {
 
 impl BaseMap for Map {
     fn is_opaque(&self, _idx: usize) -> bool {
-        self.tiles[_idx as usize] != Floor
+        self.tiles[_idx] != Floor
     }
 
     fn get_available_exits(&self, _idx: usize) -> SmallVec<[(usize, f32); 10]> {

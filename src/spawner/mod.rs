@@ -9,6 +9,7 @@ pub fn spawn_player(ecs: &mut World, pos: Point) {
         pos,
         FieldOfView::new(8),
         Health { current: 10, max: 10 },
+        Damage(1),
         Render {
             color: ColorPair::new(WHITE, BLACK),
             glyph: to_cp437('@'),

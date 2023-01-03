@@ -28,6 +28,9 @@ pub struct Health {
 #[derive(Clone, PartialEq)]
 pub struct Name(pub String);
 
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct Damage(pub i32);
+
 #[derive(Clone, Debug, PartialEq)]
 pub struct FieldOfView {
     pub visible_tiles: HashSet<Point>,

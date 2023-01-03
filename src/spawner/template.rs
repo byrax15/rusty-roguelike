@@ -3,6 +3,7 @@ use serde::Deserialize;
 use ron::de::from_reader;
 use std::fs::File;
 use std::collections::HashSet;
+use std::fmt::Debug;
 use legion::systems::CommandBuffer;
 
 #[derive(Clone, Deserialize, Debug)]
@@ -14,6 +15,7 @@ pub struct Template {
     pub glyph: char,
     pub provides: Option<Vec<(String, i32)>>,
     pub hp: Option<i32>,
+    pub base_damage: Option<i32>,
 }
 
 #[derive(Clone, Deserialize, Debug, PartialEq)]
@@ -58,6 +60,9 @@ impl Templates {
             }
         }
         commands.flush(ecs);
+        for (i, n) in <&Name>::query().iter(ecs).enumerate() {
+            eprintln!("{} : {}", i, n.0);
+        }
     }
 
     fn spawn_entity(
@@ -67,7 +72,7 @@ impl Templates {
         commands: &mut CommandBuffer,
     ) {
         let entity = commands.push((
-            pt.clone(),
+            *pt,
             Render {
                 color: ColorPair::new(WHITE, BLACK),
                 glyph: to_cp437(template.glyph),
@@ -96,6 +101,13 @@ impl Templates {
                         commands.add_component(entity, ProvidesDungeonMap),
                     _ => println!("Warning: we don't know how to provide {}", provides),
                 };
+            }
+        }
+
+        if let Some(damage) = &template.base_damage {
+            commands.add_component(entity, Damage(*damage));
+            if template.entity_type == EntityType::Item {
+                commands.add_component(entity, Weapon);
             }
         }
     }
