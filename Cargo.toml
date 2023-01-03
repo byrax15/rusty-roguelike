@@ -6,8 +6,12 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-bracket-lib = { git = "https://github.com/amethyst/bracket-lib.git", default-features = false, features = ["webgpu"] }
-legion = "=0.3.1"
-serde = "=1.0.115"
-ron = "=0.6.1"
+bracket-lib = "0.8.7"
+legion = "^0.3.1"
+serde = "1.0.152"
+ron = "0.8.0"
+
+[target.aarch64-pc-windows-msvc.dependencies]
+bracket-lib = { version = "0.8.7", default-features = false, features = ["webgpu", "threaded"] }
+
 
